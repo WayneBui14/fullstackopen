@@ -7,3 +7,13 @@
     padding: 10px;
     margin-bottom: 10px;
 }
+
+.error {
+    color: red;
+    border-color: red;
+}
+
+.success {
+    color: green;
+    border-color: green;
+}
