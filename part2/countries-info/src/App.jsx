@@ -1,24 +1,25 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import getAllCountries from '../src/countriesService/countries'
-
+import axios from 'axios'
+const api_key = import.meta.env.VITE_Weather_API
 const CountryDetail = ({ country }) => {
   const [weather, setWeather] = useState(null)
-  const api_key = import.meta.env.Weather_API
   const capital = country.capital[0]
   const lat = country.capitalInfo?.latlng?.[0]
   const lon = country.capitalInfo?.latlng?.[1]
 
   useEffect(() => {
     if (api_key) {
-      getAllCountries
-      .getWeather()
-      .then(init => setWeather(init))
+      axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}`)
+      .then(response => setWeather(response.data))
       .catch(error => {
         console.log('Weather error', error)
       })
     }
-  }, [lat, lon, api_key])
+  }, [lat, lon])
+  console.log(weather)
+  console.log(lat)
   return (
     <div>
       <h1>{country.name.common}</h1>
@@ -59,8 +60,7 @@ const App = () => {
   const [filter, setFilter] = useState('')
 
   useEffect(() => {
-    getAllCountries
-    .getAll()
+    getAllCountries()
     .then(init => setCountries(init))
   }, [])
 
