@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 const morgan = require('morgan')
 const cors = require('cors')
+
+app.use(express.static('dist'))
 app.use(cors())
 app.use(express.json())
 
@@ -61,7 +63,7 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = request.params.id
-    const persons = persons.filter(p => p.id !== id)
+    persons = persons.filter(p => p.id !== id)
     response.status(204).end()
 })
 
@@ -75,7 +77,7 @@ app.post('/api/persons', (request, response) => {
     } else if (persons.find(p => p.name === body.name)) {
         return response.status(400).json({error: 'name must be unqiue'})
     } else {
-        const person = {
+        let person = {
             id: generateId(),
             name: body.name,
             number: body.number
