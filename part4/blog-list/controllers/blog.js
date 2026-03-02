@@ -1,22 +1,28 @@
-const jwt = require('jsonwebtoken')
-const blogsRouter = require('express').Router()
-const Blog = require('../models/blog')
-const User = require('../models/user')
+const jwt = require('jsonwebtoken') // jsonwebtoken là thư viện dùng để xử lý token
+const blogsRouter = require('express').Router() // blogsRouter là router dùng để xử lý blog
+const Blog = require('../models/blog') // Blog là model dùng để xử lý blog
+const User = require('../models/user') // User là model dùng để xử lý user
 
 blogsRouter.get('/', async (request, response) => {
-    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 }) // Bay vô model Blog tìm hết
+    // Bay vô model Blog tìm tất cả các blog
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
     response.json(blogs) // Trả về cho user data của Blog
 })
 
 blogsRouter.post('/', async (request, response) => {
-    const body = request.body // Lấy body từ request của user gửi lên
-    if (!body.title || !body.url) { // Kiểm tra title và url có tồn tại không
+    // Lấy body từ request của user gửi lên
+    const body = request.body
+    // Kiểm tra title và url có tồn tại không
+    if (!body.title || !body.url) {
         return response.status(400).end() // Nếu không tồn tại thì trả về 400
     }
+    // Lấy user từ request đã được userExtractor xử lý
     const user = request.user
+    // Nếu không có user thì trả về 401
     if (!user) {
         return response.status(401).json({ error: 'token missing or invalid' })
     }
+    // Tạo blog mới theo model Blog
     const blog = new Blog({
         title: body.title,
         author: body.author,
@@ -24,43 +30,75 @@ blogsRouter.post('/', async (request, response) => {
         likes: body.likes,
         user: user._id // Gán ID user vô blog
     })
-    const savedBlog = await blog.save() // Lưu blog vô database
-    user.blogs = user.blogs.concat(savedBlog._id) // Thêm blog vô user
-    await user.save() // Lưu user vô database
-    response.status(201).json(savedBlog) // Trả về blog đã lưu
+    // Lưu blog mới này vô database
+    const savedBlog = await blog.save()
+    // Thêm blog vô trường blog của user
+    user.blogs = user.blogs.concat(savedBlog._id)
+    // Lưu user vô database
+    await user.save()
+    // Trả về blog đã lưu
+    response.status(201).json(savedBlog)
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
+    // Lấy user từ request đã được userExtractor xử lý
     const user = request.user
+    // Nếu không có user thì trả về 401
     if (!user) {
         return response.status(401).json({ error: 'token missing or invalid' })
     }
+    // Tìm blog trong database theo ID của blog có trong request
     const blog = await Blog.findById(request.params.id)
+    // Nếu không tìm thấy blog thì trả về 404
     if (!blog) {
         return response.status(404).json({ error: 'blog not found' })
     }
+    // Kiểm tra user có phải là chủ sở hữu của blog không
     if (blog.user.toString() === user.id.toString()) {
+        // Xóa blog
         await Blog.findByIdAndDelete(request.params.id)
+        // Trả về 204
         response.status(204).end()
     } else {
+        // Nếu không phải chủ sở hữu thì trả về 401
         return response.status(401).json({ error: 'you are not the owner of this blog' })
     }
 })
 
 blogsRouter.put('/:id', async (request, response) => {
+    // Lấy body từ request của user gửi lên
     const body = request.body
+    if (!body.title || !body.url) {
+        return response.status(400).end()
+    }
+    // Kiểm tra user
+    const user = request.user
+    if (!user) {
+        return response.status(401).json({ error: 'token missing or invalid' })
+    }
+    // Kiểm tra blog tồn tại
+    const blogToUpdate = await Blog.findById(request.params.id)
+    if (!blogToUpdate) {
+        return response.status(404).json({ error: 'blog not found' })
+    }
+    // Kiểm tra quyền sở hữu
+    if (blogToUpdate.user.toString() !== user.id.toString()) {
+        return response.status(401).json({ error: 'you are not the owner of this blog' })
+    }
+    // Tạo blog mới từ body
     const blog = {
         title: body.title,
         author: body.author,
         url: body.url,
         likes: body.likes
     }
+    // Tìm blog trong database với id trùng với id của blog có trong request và cập nhật lại blog
     const updatedBlog = await Blog.findByIdAndUpdate(
         request.params.id,
         blog,
         { new: true }
     )
-    response.json(updatedBlog)
+    response.json(updatedBlog) // Trả về blog đã cập nhật
 })
 
 module.exports = blogsRouter
