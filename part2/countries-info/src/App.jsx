@@ -32,6 +32,8 @@ const CountryDetail = ({ country }) => {
 
       <h3>languages:</h3>
       <ul>
+        {/* Object.values(country.languages || {}) trả về một array các giá trị của object, nếu country.languages
+        là null thì trả về object rỗng {} tránh lỗi khi map */}
         {Object.values(country.languages || {}).map(lang =>
           <li key={lang}>{lang}</li>
         )}

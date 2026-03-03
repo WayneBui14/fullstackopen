@@ -26,7 +26,7 @@ loginRouter.post('/', async (request, response) => {
     // Trả về token, username và id
     response
         .status(200)
-        .json({ token, username: user.username, id: user._id })
+        .json({ token, username: user.username, name: user.name, id: user._id })
 })
 
 module.exports = loginRouter // Xuất loginRouter ra để dùng ở app.js
