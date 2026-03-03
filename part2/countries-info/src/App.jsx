@@ -15,11 +15,13 @@ const CountryDetail = ({ country }) => {
         .then(response => setWeather(response.data))
         .catch(error => {
           console.log('Weather error', error)
+          setWeather('unavailable')
         })
+    } else {
+      setWeather('unavailable')
     }
   }, [lat, lon])
-  console.log(weather)
-  console.log(lat)
+
   return (
     <div>
       <h1>{country.name.common}</h1>
@@ -38,7 +40,9 @@ const CountryDetail = ({ country }) => {
         alt={`Flag of ${country.name.common}`}
         width="150"
       />
-      {weather ? (
+      {weather === 'unavailable' ? (
+        <p>Weather data not available for this country</p>
+      ) : weather ? (
         <div>
           <h2>Weather in {capital}</h2>
           <p>temperature {weather.main.temp} Celsius</p>
