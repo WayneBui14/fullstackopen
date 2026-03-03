@@ -4,24 +4,26 @@ import getAllCountries from './countriesService/countries'
 import axios from 'axios'
 const api_key = import.meta.env.VITE_Weather_API
 const CountryDetail = ({ country }) => {
+  // Nhận prop country từ App, khởi tạo state weather = null
   const [weather, setWeather] = useState(null)
+  // Lấy thủ đô và tọa độ từ prop country
   const capital = country.capital ? country.capital[0] : 'N/A'
   const lat = country.capitalInfo?.latlng?.[0]
   const lon = country.capitalInfo?.latlng?.[1]
-
+  // Render lần đầu hiển thị tên nước, diện tích, ngôn ngữ, cờ
+  // UseEffect chạy sau render, nếu có api_key, lat, lon thì mới gọi API OpenWeatherMap
   useEffect(() => {
+    // Kiểm tra nếu có API key và tọa độ thì mới gọi API
     if (api_key && lat !== undefined && lon !== undefined) {
       axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${api_key}&units=metric`)
         .then(response => setWeather(response.data))
         .catch(error => {
           console.log('Weather error', error)
-          setWeather('unavailable')
         })
     } else {
       setWeather('unavailable')
     }
   }, [lat, lon])
-
   return (
     <div>
       <h1>{country.name.common}</h1>
@@ -41,7 +43,7 @@ const CountryDetail = ({ country }) => {
         width="150"
       />
       {weather === 'unavailable' ? (
-        <p>Weather data not available for this country</p>
+        <p>Weather data unavailable for this country</p>
       ) : weather ? (
         <div>
           <h2>Weather in {capital}</h2>
