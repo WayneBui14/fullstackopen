@@ -6,7 +6,8 @@
   "scripts": {
     "test": "cross-env NODE_ENV=test node --test",
     "dev": "node --watch index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
@@ -23,7 +24,13 @@
     "morgan": "^1.10.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@stylistic/eslint-plugin": "^5.9.0",
     "cross-env": "^10.1.0",
+    "eslint": "^10.0.2",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
     "supertest": "^7.2.2"
   }
 }

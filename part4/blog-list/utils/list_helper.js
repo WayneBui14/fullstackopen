@@ -24,7 +24,7 @@ const mostBlogs = (blogs) => {
   if (blogs.length === 0) return null
   const authorCount = _.countBy(blogs, 'author')
   const formattedList = _.map(authorCount, (count, author) => {
-    return {author: author, blogs: count}
+    return { author: author, blogs: count }
   })
   return _.maxBy(formattedList, 'blogs')
 }
