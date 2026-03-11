@@ -22,7 +22,7 @@ const Blog = ({ blog, addLike, deleteBlog, currentUser }) => {
   }
   const showRemoveButton = blog.user && currentUser && (blog.user.username === currentUser.username || blog.user.id === currentUser.id || blog.user === currentUser.id)
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className='blog'>
       <div>
         {blog.title} - {blog.author}
         <button onClick={toggleVisibility}>
@@ -30,7 +30,7 @@ const Blog = ({ blog, addLike, deleteBlog, currentUser }) => {
         </button>
       </div>
       {visible && (
-        <div>
+        <div className='blog-details'>
           <p>{blog.url}</p>
           <p>
             {blog.likes}
