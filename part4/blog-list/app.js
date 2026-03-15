@@ -29,5 +29,9 @@ app.use(middleware.tokenExtractor) // Middleware để lấy token từ header a
 app.use('/api/blogs', middleware.userExtractor, blogsRouter) // Nhét userExtractor vào trước blogsRouter để lấy user từ token, middleware này chỉ chạy cho mỗi route api/blogs
 app.use('/api/users', userRouter) // Router lấy danh sách user
 app.use('/api/login', loginRouter) // Router đăng nhập
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/tesing')
+  app.use('/api/testing', testingRouter)
+}
 app.use(middleware.errorHandler) // Middleware xử lý lỗi
 module.exports = app // Xuất app ra ngoài
