@@ -127,21 +127,21 @@ describe('Blog app', () => {
       // 3. THỰC HIỆN BẤM LIKE VÀ ĐỢI UI CẬP NHẬT
       // Bài số 1: 1 like
       await blog1.getByRole('button', { name: 'like' }).click()
-      await expect(blog1.getByText('1')).toBeVisible()
+      await expect(blog1.getByText('likes 1')).toBeVisible()
 
       // Bài số 2: 3 likes (Phải chờ text cập nhật xong mới bấm tiếp để không bị lỗi đồng bộ)
       await blog2.getByRole('button', { name: 'like' }).click()
-      await expect(blog2.getByText('1')).toBeVisible()
+      await expect(blog2.getByText('likes 1')).toBeVisible()
       await blog2.getByRole('button', { name: 'like' }).click()
-      await expect(blog2.getByText('2')).toBeVisible()
+      await expect(blog2.getByText('likes 2')).toBeVisible()
       await blog2.getByRole('button', { name: 'like' }).click()
-      await expect(blog2.getByText('3')).toBeVisible()
+      await expect(blog2.getByText('likes 3')).toBeVisible()
 
       // Bài số 3: 2 likes
       await blog3.getByRole('button', { name: 'like' }).click()
-      await expect(blog3.getByText('1')).toBeVisible()
+      await expect(blog3.getByText('likes 1')).toBeVisible()
       await blog3.getByRole('button', { name: 'like' }).click()
-      await expect(blog3.getByText('2')).toBeVisible()
+      await expect(blog3.getByText('likes 2')).toBeVisible()
 
       // 4. KIỂM TRA THỨ TỰ SẮP XẾP TRÊN MÀN HÌNH
       // Lấy toàn bộ các phần tử có class .blog đang hiển thị

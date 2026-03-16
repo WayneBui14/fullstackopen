@@ -39,7 +39,7 @@ test('clicking the view button displays url and number of likes', async () => {
     await user.click(button)
     const url = screen.getByText('https://fullstackopen.com/part5/testing_react_applications', { exact: false })
     expect(url).toBeDefined()
-    const likes = screen.getByText('like', { exact: false })
+    const likes = screen.getByText('likes 11', { exact: false })
     expect(likes).toBeDefined()
     //screen.debug()
 })
