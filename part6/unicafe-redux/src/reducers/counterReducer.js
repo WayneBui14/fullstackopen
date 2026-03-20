@@ -3,7 +3,9 @@ const initialState = {
   ok: 0,
   bad: 0
 }
-
+/* Trong kiến trúc State management, hàm action đóng vai trò là một người đưa tin
+khi có sự thay đổi xảy ra trong state.
+*/
 const counterReducer = (state = initialState, action) => {
   console.log(action)
   switch (action.type) {

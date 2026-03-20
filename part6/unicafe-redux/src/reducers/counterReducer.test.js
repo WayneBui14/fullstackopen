@@ -1,6 +1,6 @@
-import deepFreeze from 'deep-freeze'
-import { describe, expect, test } from 'vitest'
-import counterReducer from './counterReducer'
+import deepFreeze from 'deep-freeze' // Đảm bảo tính bất biến (imutability) của dữ liệu
+import { describe, expect, test } from 'vitest' // Thư viện để viết bài kiểm thử
+import counterReducer from './counterReducer' // Nhập module (hàm action)
 
 describe('unicafe reducer', () => {
   const initialState = {
