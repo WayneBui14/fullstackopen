@@ -1,53 +1,58 @@
 import { createSlice } from '@reduxjs/toolkit'
+import anecdoteService from '../services/anecdotes'
 
-const anecdotesAtStart = [
-  'If it hurts, do it more often',
-  'Adding manpower to a late software project makes it later!',
-  'The first 90 percent of the code accounts for the first 90 percent of the development time...The remaining 10 percent of the code accounts for the other 90 percent of the development time.',
-  'Any fool can write code that a computer can understand. Good programmers write code that humans can understand.',
-  'Premature optimization is the root of all evil.',
-  'Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.'
-]
-
-const getId = () => (100000 * Math.random()).toFixed(0)
-
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0
-  }
-}
-
-const initialState = anecdotesAtStart.map(asObject)
-
-// SỬ DỤNG createSlice
 const anecdoteSlice = createSlice({
   name: 'anecdotes',
-  initialState,
+  initialState: [],
   reducers: {
-    // 1. Tạo câu chuyện mới: Dùng thẳng .push() của mảng!
-    createAnecdote(state, action) {
-      const content = action.payload
-      state.push({
-        content,
-        id: getId(),
-        votes: 0
-      })
+    appendAnecdote(state, action) {
+      state.push(action.payload)
     },
-    // 2. Vote: Tìm phần tử và cộng trực tiếp votes++ !
-    voteAnecdote(state, action) {
-      const id = action.payload
-      const anecdoteToChange = state.find(n => n.id === id)
-      if (anecdoteToChange) {
-        anecdoteToChange.votes++
-      }
+    // ĐỔI TÊN HÀM NÀY THÀNH updateAnecdote
+    updateAnecdote(state, action) {
+      const updatedAnecdote = action.payload
+      // Map qua mảng, nếu đúng ID thì thay bằng object mới từ server, sai thì giữ nguyên
+      return state.map(anecdote =>
+        anecdote.id !== updatedAnecdote.id ? anecdote : updatedAnecdote
+      )
+    },
+    setAnecdotes(state, action) {
+      return action.payload
     }
   }
 })
 
-// Xuất các Action Creators do RTK tự động sinh ra
-export const { createAnecdote, voteAnecdote } = anecdoteSlice.actions
+// Export action update thay vì vote
+export const { appendAnecdote, updateAnecdote, setAnecdotes } = anecdoteSlice.actions
 
-// Xuất Reducer để gắn vào store.js
+export const initializeAnecdotes = () => {
+  return async dispatch => {
+    const anecdotes = await anecdoteService.getAll()
+    dispatch(setAnecdotes(anecdotes))
+  }
+}
+
+export const createAnecdote = content => {
+  return async dispatch => {
+    const newAnecdote = await anecdoteService.createNew(content)
+    dispatch(appendAnecdote(newAnecdote))
+  }
+}
+
+// THÊM THUNK ACTION CHUYÊN XỬ LÝ VOTE
+export const voteAnecdote = (anecdote) => {
+  return async dispatch => {
+    // 1. Tạo một object copy và tăng vote lên 1
+    const changedAnecdote = {
+      ...anecdote,
+      votes: anecdote.votes + 1
+    }
+    // 2. Gửi request PUT lên server
+    const updatedAnecdote = await anecdoteService.update(anecdote.id, changedAnecdote)
+
+    // 3. Dispatch action đồng bộ để cập nhật giao diện
+    dispatch(updateAnecdote(updatedAnecdote))
+  }
+}
+
 export default anecdoteSlice.reducer
