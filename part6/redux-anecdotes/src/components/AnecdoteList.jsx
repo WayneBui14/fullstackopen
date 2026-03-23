@@ -1,22 +1,37 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { voteAnecdote } from '../reducers/anecdoteReducer'
+// Import action notification
+import { setNotification, clearNotification } from '../reducers/notificationReducer'
 
 const AnecdoteList = () => {
-    // Lấy state từ Redux
-    const anecdotes = useSelector(state => state)
+    const anecdotes = useSelector(state => {
+        if (state.filter === '') {
+            return state.anecdotes
+        }
+        return state.anecdotes.filter(anecdote =>
+            anecdote.content.toLowerCase().includes(state.filter.toLowerCase())
+        )
+    })
+
     const dispatch = useDispatch()
 
-    // Hàm xử lý vote
-    const vote = (id) => {
-        dispatch(voteAnecdote(id))
+    // NHẬN NGUYÊN OBJECT ANECDOTE VÀO ĐÂY
+    const vote = (anecdote) => {
+        dispatch(voteAnecdote(anecdote.id))
+
+        // Hiện thông báo chứa nội dung câu chuyện
+        dispatch(setNotification(`You voted '${anecdote.content}'`))
+
+        // Hẹn giờ tắt
+        setTimeout(() => {
+            dispatch(clearNotification())
+        }, 5000)
     }
 
-    // Sắp xếp mảng copy theo số vote giảm dần
     const sortedAnecdotes = [...anecdotes].sort((a, b) => b.votes - a.votes)
 
     return (
         <div>
-            {/* Lặp qua mảng đã sắp xếp để render */}
             {sortedAnecdotes.map(anecdote =>
                 <div key={anecdote.id}>
                     <div>
@@ -24,7 +39,8 @@ const AnecdoteList = () => {
                     </div>
                     <div>
                         has {anecdote.votes}
-                        <button onClick={() => vote(anecdote.id)}>vote</button>
+                        {/* TRUYỀN NGUYÊN OBJECT VÀO HÀM VOTE */}
+                        <button onClick={() => vote(anecdote)}>vote</button>
                     </div>
                 </div>
             )}
