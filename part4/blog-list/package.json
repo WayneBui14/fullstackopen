@@ -8,7 +8,8 @@
     "dev": "cross-env NODE_ENV=development node --watch index.js",
     "start": "cross-env NODE_ENV=production node index.js",
     "start:test": "cross-env NODE_ENV=test node index.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "author": "",
@@ -32,6 +33,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "prettier": "^3.8.1",
     "supertest": "^7.2.2"
   }
 }

@@ -14,7 +14,9 @@ userRouter.post('/', async (request, response) => {
   const { username, password, name } = request.body
   // Kiểm tra độ dài mật khẩu trước khi đem đi băm
   if (!password || password.length < 3) {
-    return response.status(400).json({ error: 'password must be at least 3 characters long' })
+    return response
+      .status(400)
+      .json({ error: 'password must be at least 3 characters long' })
   }
   // Thêm muối cho bảo mật "mặn mà"
   const saltRounds = 10

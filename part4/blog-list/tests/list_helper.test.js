@@ -122,12 +122,18 @@ const blogs = [
 
 describe('most blogs', () => {
   test('return the author with the most blogs', () => {
-    assert.deepStrictEqual(mostBlogs(blogs), { author: 'Edsger W. Dijkstra', blogs: 2 })
+    assert.deepStrictEqual(mostBlogs(blogs), {
+      author: 'Edsger W. Dijkstra',
+      blogs: 2
+    })
   })
 })
 
 describe('most likes', () => {
   test('return the author with most likes', () => {
-    assert.deepStrictEqual(mostLikes(blogs), { author: 'Edsger W. Dijkstra', likes: 17 })
+    assert.deepStrictEqual(mostLikes(blogs), {
+      author: 'Edsger W. Dijkstra',
+      likes: 17
+    })
   })
 })

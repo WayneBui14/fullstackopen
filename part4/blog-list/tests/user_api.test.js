@@ -28,7 +28,7 @@ describe('initial users', () => {
       .expect('Content-Type', /application\/json/) // Kêu supertest kiểm tra
     const userAtEnd = await User.find({}) // Lấy danh sách user sau khi thêm
     assert.strictEqual(userAtEnd.length, userAtStart.length + 1) // Kiểm tra số lượng user tăng lên 1
-    const usernames = userAtEnd.map(u => u.username) // Lấy danh sách username
+    const usernames = userAtEnd.map((u) => u.username) // Lấy danh sách username
     assert(usernames.includes(newUser.username)) // Kiểm tra username mới có trong danh sách
   })
   test('create user fails with status code 400 if password is too short', async () => {
@@ -38,10 +38,7 @@ describe('initial users', () => {
       name: 'Wayne',
       password: '12'
     }
-    await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
+    await api.post('/api/users').send(newUser).expect(400)
     const userAtEnd = await User.find({})
     assert.strictEqual(userAtEnd.length, userAtStart.length)
   })
@@ -52,10 +49,7 @@ describe('initial users', () => {
       name: 'Wayne',
       password: 'password123'
     }
-    await api
-      .post('/api/users')
-      .send(newUser)
-      .expect(400)
+    await api.post('/api/users').send(newUser).expect(400)
     const userAtEnd = await User.find({})
     assert.strictEqual(userAtEnd.length, userAtStart.length)
   })

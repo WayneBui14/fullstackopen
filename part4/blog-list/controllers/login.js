@@ -9,17 +9,16 @@ loginRouter.post('/', async (request, response) => {
   // Tìm user trong database theo username của request body
   const user = await User.findOne({ username })
   // So sánh password hash của user với password hash của request body
-  const passwordCorrect = user === null
-    ? false
-    : await bcrypt.compare(password, user.passwordHash)
-    // Nếu không tìm thấy user hoặc password không đúng, trả về 401
+  const passwordCorrect =
+    user === null ? false : await bcrypt.compare(password, user.passwordHash)
+  // Nếu không tìm thấy user hoặc password không đúng, trả về 401
   if (!(passwordCorrect && user)) {
     return response.status(401).json({ error: 'invalid username or password' })
   }
   // Tạo userForToken
   const userForToken = {
     username: user.username,
-    id: user._id,
+    id: user._id
   }
   // Tạo token
   const token = jwt.sign(userForToken, process.env.SECRET)

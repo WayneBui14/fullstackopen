@@ -61,7 +61,9 @@ blogsRouter.delete('/:id', async (request, response) => {
     response.status(204).end()
   } else {
     // Nếu không phải chủ sở hữu thì trả về 401
-    return response.status(401).json({ error: 'you are not the owner of this blog' })
+    return response
+      .status(401)
+      .json({ error: 'you are not the owner of this blog' })
   }
 })
 
@@ -83,7 +85,9 @@ blogsRouter.put('/:id', async (request, response) => {
   }
   // Kiểm tra quyền sở hữu
   if (blogToUpdate.user.toString() !== user.id.toString()) {
-    return response.status(401).json({ error: 'you are not the owner of this blog' })
+    return response
+      .status(401)
+      .json({ error: 'you are not the owner of this blog' })
   }
   // Tạo blog mới từ body
   const blog = {
@@ -93,11 +97,9 @@ blogsRouter.put('/:id', async (request, response) => {
     likes: body.likes
   }
   // Tìm blog trong database với id trùng với id của blog có trong request và cập nhật lại blog
-  const updatedBlog = await Blog.findByIdAndUpdate(
-    request.params.id,
-    blog,
-    { new: true }
-  ).populate('user', { username: 1, name: 1 })
+  const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, {
+    new: true
+  }).populate('user', { username: 1, name: 1 })
   response.json(updatedBlog) // Trả về blog đã cập nhật
 })
 

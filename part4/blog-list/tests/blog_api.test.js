@@ -28,11 +28,14 @@ beforeEach(async () => {
     id: user.id
   }
   token = jwt.sign(userForToken, process.env.SECRET)
-  const blogObjects = helper.initialBlogs.map(blog => new Blog({
-    ...blog,
-    user: user.id
-  }))
-  const promiseArray = blogObjects.map(blog => blog.save())
+  const blogObjects = helper.initialBlogs.map(
+    (blog) =>
+      new Blog({
+        ...blog,
+        user: user.id
+      })
+  )
+  const promiseArray = blogObjects.map((blog) => blog.save())
   await Promise.all(promiseArray)
 })
 
@@ -71,7 +74,7 @@ test('a valid blog can be added', async () => {
 
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length + 1)
-  const titles = blogsAtEnd.map(b => b.title)
+  const titles = blogsAtEnd.map((b) => b.title)
   assert(titles.includes(newBlog.title))
 })
 
@@ -79,7 +82,7 @@ test('a blog without likes defaults to 0', async () => {
   const newBlog = {
     title: 'Async/await simplifies making async calls',
     auythor: 'Wayne',
-    url: 'https://fullstackopen.com/',
+    url: 'https://fullstackopen.com/'
   }
   const response = await api
     .post('/api/blogs')
@@ -135,7 +138,7 @@ describe('delete blog', () => {
     const blogAtEnd = await helper.blogsInDb()
     assert.strictEqual(blogAtEnd.length, helper.initialBlogs.length - 1)
 
-    const titles = blogAtEnd.map(r => r.title)
+    const titles = blogAtEnd.map((r) => r.title)
     assert(!titles.includes(blogToDelete.title))
   })
 })
@@ -145,10 +148,7 @@ test('adding a blog fails with status code 401 if token is not provided', async 
     author: 'Hacker',
     url: 'http://hacker.com'
   }
-  await api
-    .post('/api/blogs')
-    .send(newBlog)
-    .expect(401)
+  await api.post('/api/blogs').send(newBlog).expect(401)
   const blogsAtEnd = await helper.blogsInDb()
   assert.strictEqual(blogsAtEnd.length, helper.initialBlogs.length)
 })
@@ -168,12 +168,11 @@ describe('update blog', () => {
       .expect(200)
 
     const blogsAtEnd = await helper.blogsInDb()
-    const updatedBlogInDb = blogsAtEnd.find(b => b.id === blogToUpdate.id)
+    const updatedBlogInDb = blogsAtEnd.find((b) => b.id === blogToUpdate.id)
 
     assert.strictEqual(updatedBlogInDb.likes, blogToUpdate.likes + 1)
   })
 })
-
 
 after(async () => {
   await mongoose.connection.close()
