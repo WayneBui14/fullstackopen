@@ -1,7 +1,11 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, addLike, deleteBlog, currentUser }) => {
+const Blog = ({ blog, currentUser }) => {
   const [visible, setVisible] = useState(false)
+  const dispatch = useDispatch()
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -14,15 +18,10 @@ const Blog = ({ blog, addLike, deleteBlog, currentUser }) => {
   }
 
   const handleLike = () => {
-    const updatedBlog = {
-      ...blog,
-      likes: blog.likes + 1,
-      user: blog.user ? blog.user.id : null
-    }
-    addLike(blog.id, updatedBlog)
+    dispatch(likeBlog(blog))
   }
   const handleRemove = () => {
-    deleteBlog(blog.id, blog)
+    dispatch(deleteBlog(blog.id))
   }
   const showRemoveButton =
     blog.user &&
