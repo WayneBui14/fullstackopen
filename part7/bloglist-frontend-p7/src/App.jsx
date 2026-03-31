@@ -61,9 +61,19 @@ const App = () => {
       blogService.setToken(parsedUser.token)
     }
   }, [])
+  const menuStyle = {
+    backgroundColor: 'lightgray',
+    padding: 10,
+    marginBottom: 20
+  }
+
+  const linkStyle = {
+    paddingRight: 10,
+    textDecoration: 'none',
+    fontWeight: 'bold'
+  }
   return (
     <div>
-      <Notification />
       {user === null ? (
         <div>
           <h2>login</h2>
@@ -96,11 +106,20 @@ const App = () => {
       ) : (
         <Router>
           <div>
+            <div style={menuStyle}>
+              <Link to="/" style={linkStyle}>
+                blogs
+              </Link>
+              <Link to="/users" style={linkStyle}>
+                users
+              </Link>
+              <span>
+                {user.name} logged in
+                <button onClick={handleLogout}>logout</button>
+              </span>
+            </div>
             <h2>blogs</h2>
-            <p>
-              {user.name} logged in
-              <button onClick={handleLogout}>logout</button>
-            </p>
+            <Notification />
             <Routes>
               <Route
                 path="/"
