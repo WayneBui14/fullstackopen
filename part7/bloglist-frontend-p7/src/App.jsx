@@ -9,15 +9,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setNotification } from './reducers/notificationReducer'
 import { initializeBlogs, createBlog } from './reducers/blogReducer'
 import { setUser, loginUser, logoutUser } from './reducers/userReducer'
+import Users from './components/Users'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import { initializeUsers } from './reducers/usersReducer'
 
 const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  
+
   const dispatch = useDispatch()
   const blogFormRef = useRef()
-  const blogs = useSelector(state => state.blogs)
-  const user = useSelector(state => state.user)
+  const blogs = useSelector((state) => state.blogs)
+  const user = useSelector((state) => state.user)
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -33,19 +36,20 @@ const App = () => {
     try {
       blogFormRef.current.toggleVisibility()
       dispatch(createBlog(blogObject))
-      dispatch(setNotification(
-        `a new blog ${blogObject.title} by ${blogObject.author} added`,
-        'success'
-      ))
+      dispatch(
+        setNotification(
+          `a new blog ${blogObject.title} by ${blogObject.author} added`,
+          'success'
+        )
+      )
     } catch (exception) {
       dispatch(setNotification('Failed to create blog', 'error'))
     }
   }
 
-
-
   useEffect(() => {
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [dispatch])
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedBlogappUser')
@@ -88,25 +92,33 @@ const App = () => {
           </form>
         </div>
       ) : (
-        <div>
-          <h2>blogs</h2>
-          <p>
-            {user.name} logged in
-            <button onClick={handleLogout}>logout</button>
-          </p>
-          <Togglable buttonLabel="new blog" ref={blogFormRef}>
-            <BlogForm createBlog={addBlog} />
-          </Togglable>
-          {[...blogs]
-            .sort((a, b) => b.likes - a.likes)
-            .map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                currentUser={user}
+        <Router>
+          <div>
+            <h2>blogs</h2>
+            <p>
+              {user.name} logged in
+              <button onClick={handleLogout}>logout</button>
+            </p>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <div>
+                    <Togglable buttonLabel="new blog" ref={blogFormRef}>
+                      <BlogForm createBlog={addBlog} />
+                    </Togglable>
+                    {[...blogs]
+                      .sort((a, b) => b.likes - a.likes)
+                      .map((blog) => (
+                        <Blog key={blog.id} blog={blog} currentUser={user} />
+                      ))}
+                  </div>
+                }
               />
-            ))}
-        </div>
+              <Route path="/users" element={<Users />} />
+            </Routes>
+          </div>
+        </Router>
       )}
     </div>
   )

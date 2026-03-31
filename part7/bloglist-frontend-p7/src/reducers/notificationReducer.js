@@ -16,10 +16,14 @@ const notificationSlice = createSlice({
 export const { showNotification, clearNotification } = notificationSlice.actions
 
 // Tạo Thunk Action để tự động tắt thông báo sau vài giây
-export const setNotification = (message, type = 'success', timeInSeconds = 5) => {
-  return async dispatch => {
+export const setNotification = (
+  message,
+  type = 'success',
+  timeInSeconds = 5
+) => {
+  return async (dispatch) => {
     dispatch(showNotification({ message, type }))
-    
+
     setTimeout(() => {
       dispatch(clearNotification())
     }, timeInSeconds * 1000)

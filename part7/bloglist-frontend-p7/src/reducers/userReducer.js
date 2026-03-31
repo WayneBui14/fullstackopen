@@ -20,19 +20,19 @@ export const { setUser, clearUser } = userSlice.actions
 
 // THUNK ACTION: Xử lý quy trình Đăng nhập
 export const loginUser = (credentials) => {
-  return async dispatch => {
+  return async (dispatch) => {
     try {
       const user = await loginService.login(credentials)
-      
+
       // Lưu vào Local Storage để F5 không bị mất phiên đăng nhập
       window.localStorage.setItem('loggedBlogappUser', JSON.stringify(user))
-      
+
       // Gắn token cho các request gọi API Blog sau này
       blogService.setToken(user.token)
-      
+
       // Cập nhật Redux Store
       dispatch(setUser(user))
-      
+
       // Bắn thông báo chào mừng
       dispatch(setNotification(`Welcome ${user.name}`, 'success'))
     } catch (error) {
@@ -44,7 +44,7 @@ export const loginUser = (credentials) => {
 
 // THUNK ACTION: Xử lý quy trình Đăng xuất
 export const logoutUser = () => {
-  return async dispatch => {
+  return async (dispatch) => {
     window.localStorage.removeItem('loggedBlogappUser')
     blogService.setToken(null)
     dispatch(clearUser())
