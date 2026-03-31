@@ -42,31 +42,7 @@ const App = () => {
     }
   }
 
-  const addLike = async (id, blogObject) => {
-    try {
-      const updatedBlog = await blogService.update(id, blogObject)
-      setBlogs(blogs.map((blog) => (blog.id !== id ? blog : updatedBlog)))
-    } catch (exception) {
-      dispatch(setNotification('Failed to update blog', 'error'))
-    }
-  }
 
-  const deleteBlog = async (id, blogObject) => {
-    if (
-      window.confirm(`Remove blog ${blogObject.title} by ${blogObject.author}?`)
-    ) {
-      try {
-        await blogService.remove(id)
-        setBlogs(blogs.filter((blog) => blog.id !== id))
-        dispatch(setNotification(
-          `Blog ${blogObject.title} by ${blogObject.author} removed`,
-          'success'
-        ))
-      } catch (exception) {
-        dispatch(setNotification('Failed to remove blog', 'error'))
-      }
-    }
-  }
 
   useEffect(() => {
     dispatch(initializeBlogs())
@@ -127,8 +103,6 @@ const App = () => {
               <Blog
                 key={blog.id}
                 blog={blog}
-                addLike={addLike}
-                deleteBlog={deleteBlog}
                 currentUser={user}
               />
             ))}

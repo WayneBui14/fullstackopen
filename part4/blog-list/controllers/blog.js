@@ -83,12 +83,7 @@ blogsRouter.put('/:id', async (request, response) => {
   if (!blogToUpdate) {
     return response.status(404).json({ error: 'blog not found' })
   }
-  // Kiểm tra quyền sở hữu
-  if (blogToUpdate.user.toString() !== user.id.toString()) {
-    return response
-      .status(401)
-      .json({ error: 'you are not the owner of this blog' })
-  }
+
   // Tạo blog mới từ body
   const blog = {
     title: body.title,
