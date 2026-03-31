@@ -1,17 +1,19 @@
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { Table } from 'react-bootstrap' // Bổ sung import
 
 const Users = () => {
   const users = useSelector((state) => state.userList)
 
   return (
     <div>
-      <h2>Users</h2>
-      <table>
+      <h2 className="my-4">Users</h2>
+      {/* Thay <table> bằng <Table striped> để có viền sọc cực đẹp */}
+      <Table striped bordered hover>
         <thead>
           <tr>
-            <th></th>
-            <th>blogs created</th>
+            <th>Name</th>
+            <th>Blogs created</th>
           </tr>
         </thead>
         <tbody>
@@ -24,7 +26,7 @@ const Users = () => {
             </tr>
           ))}
         </tbody>
-      </table>
+      </Table>
     </div>
   )
 }

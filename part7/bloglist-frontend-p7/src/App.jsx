@@ -14,6 +14,7 @@ import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
 import { initializeUsers } from './reducers/usersReducer'
 import User from './components/User'
 import BlogDetails from './components/BlogDetails'
+import { Alert, Navbar, Nav, Button } from 'react-bootstrap'
 
 const App = () => {
   const [username, setUsername] = useState('')
@@ -73,7 +74,7 @@ const App = () => {
     fontWeight: 'bold'
   }
   return (
-    <div>
+    <div className="container">
       {user === null ? (
         <div>
           <h2>login</h2>
@@ -106,18 +107,49 @@ const App = () => {
       ) : (
         <Router>
           <div>
-            <div style={menuStyle}>
-              <Link to="/" style={linkStyle}>
-                blogs
-              </Link>
-              <Link to="/users" style={linkStyle}>
-                users
-              </Link>
-              <span>
-                {user.name} logged in
-                <button onClick={handleLogout}>logout</button>
-              </span>
-            </div>
+            <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
+              <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+              <Navbar.Collapse id="responsive-navbar-nav">
+                <Nav className="me-auto">
+                  <Nav.Link href="#" as="span">
+                    <Link
+                      to="/"
+                      style={{
+                        padding: 5,
+                        color: 'white',
+                        textDecoration: 'none'
+                      }}
+                    >
+                      blogs
+                    </Link>
+                  </Nav.Link>
+                  <Nav.Link href="#" as="span">
+                    <Link
+                      to="/users"
+                      style={{
+                        padding: 5,
+                        color: 'white',
+                        textDecoration: 'none'
+                      }}
+                    >
+                      users
+                    </Link>
+                  </Nav.Link>
+                </Nav>
+                <Nav>
+                  <Navbar.Text style={{ paddingRight: 10 }}>
+                    {user.name} logged in
+                  </Navbar.Text>
+                  <Button
+                    variant="outline-light"
+                    size="sm"
+                    onClick={handleLogout}
+                  >
+                    logout
+                  </Button>
+                </Nav>
+              </Navbar.Collapse>
+            </Navbar>
             <h2>blogs</h2>
             <Notification />
             <Routes>
