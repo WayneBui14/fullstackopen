@@ -97,5 +97,25 @@ blogsRouter.put('/:id', async (request, response) => {
   }).populate('user', { username: 1, name: 1 })
   response.json(updatedBlog) // Trả về blog đã cập nhật
 })
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { comment } = request.body
 
+  // Tìm bài blog hiện tại
+  const blog = await Blog.findById(request.params.id)
+
+  if (!blog) {
+    return response.status(404).json({ error: 'blog not found' })
+  }
+
+  // Khởi tạo mảng comments nếu blog cũ chưa có, sau đó nhét comment mới vào
+  blog.comments = blog.comments ? blog.comments.concat(comment) : [comment]
+
+  // Lưu lại vào database
+  const savedBlog = await blog.save()
+
+  // (Tùy chọn) Populate lại user để frontend không bị lỗi hiển thị tên người đăng
+  await savedBlog.populate('user', { username: 1, name: 1 })
+
+  response.status(201).json(savedBlog)
+})
 module.exports = blogsRouter

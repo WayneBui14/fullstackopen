@@ -61,6 +61,14 @@ const BlogDetails = () => {
           remove
         </button>
       )}
+      <h3>comments</h3>
+      <ul>
+        {/* Dùng (blog.comments || []) để đề phòng trường hợp blog cũ chưa có mảng comments gây lỗi */}
+        {(blog.comments || []).map((comment, index) => (
+          // Vì comment ẩn danh không có ID riêng, ta tạm dùng index làm key
+          <li key={index}>{comment}</li>
+        ))}
+      </ul>
     </div>
   )
 }
