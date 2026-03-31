@@ -1,8 +1,10 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
-import { likeBlog, deleteBlog } from '../reducers/blogReducer'
+import { likeBlog, deleteBlog, commentBlog } from '../reducers/blogReducer'
+import { useState } from 'react'
 
 const BlogDetails = () => {
+  const [comment, setComment] = useState('')
   const { id } = useParams()
   const dispatch = useDispatch()
   const navigate = useNavigate()
@@ -27,6 +29,12 @@ const BlogDetails = () => {
       // Xóa xong thì điều hướng về trang chủ
       navigate('/')
     }
+  }
+
+  const handleCommentSubmit = (event) => {
+    event.preventDefault()
+    dispatch(commentBlog(blog.id, comment))
+    setComment('')
   }
 
   const isCreator =
@@ -62,6 +70,14 @@ const BlogDetails = () => {
         </button>
       )}
       <h3>comments</h3>
+      <form onSubmit={handleCommentSubmit}>
+        <input
+          type="text"
+          value={comment}
+          onChange={({ target }) => setComment(target.value)}
+        />
+        <button type="submit">add comment</button>
+      </form>
       <ul>
         {/* Dùng (blog.comments || []) để đề phòng trường hợp blog cũ chưa có mảng comments gây lỗi */}
         {(blog.comments || []).map((comment, index) => (
