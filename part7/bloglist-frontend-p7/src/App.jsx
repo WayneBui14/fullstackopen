@@ -37,16 +37,18 @@ const App = () => {
 
   const addBlog = async (blogObject) => {
     try {
+      await dispatch(createBlog(blogObject))
       blogFormRef.current.toggleVisibility()
-      dispatch(createBlog(blogObject))
       dispatch(
         setNotification(
-          `a new blog ${blogObject.title} by ${blogObject.author} added`,
+          `a new blog ${blogObject.title} by ${blogObject.author ? blogObject.author : 'Unknown'} added`,
           'success'
         )
       )
     } catch (exception) {
-      dispatch(setNotification('Failed to create blog', 'error'))
+      const errorMessage =
+        exception.response?.data?.error || 'Failed to create blog'
+      dispatch(setNotification(errorMessage, 'error'))
     }
   }
 

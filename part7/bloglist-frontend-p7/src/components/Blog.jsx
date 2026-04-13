@@ -8,12 +8,17 @@ const Blog = ({ blog }) => {
     borderWidth: 1,
     marginBottom: 5
   }
-
+  if (!blog.author) {
+    return (
+      <div style={blogStyle} className="blog-list-item">
+        <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+      </div>
+    )
+  }
   return (
     <div style={blogStyle} className="blog-list-item">
-      {/* Bọc tiêu đề trong Link trỏ đến /blogs/id */}
       <Link to={`/blogs/${blog.id}`}>
-        {blog.title} {blog.author}
+        {blog.title} - {blog.author}
       </Link>
     </div>
   )

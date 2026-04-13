@@ -12,9 +12,13 @@ blogsRouter.get('/', async (request, response) => {
 blogsRouter.post('/', async (request, response) => {
   // Lấy body từ request của user gửi lên
   const body = request.body
-  // Kiểm tra title và url có tồn tại không
-  if (!body.title || !body.url) {
-    return response.status(400).end() // Nếu không tồn tại thì trả về 400
+  // Kiểm tra title và url có tồn tại không và trả về thông báo lỗi cụ thể
+  if (!body.title && !body.url) {
+    return response.status(400).json({ error: 'title and url are required' })
+  } else if (!body.title) {
+    return response.status(400).json({ error: 'title is required' })
+  } else if (!body.url) {
+    return response.status(400).json({ error: 'url is required' })
   }
   // Lấy user từ request đã được userExtractor xử lý
   const user = request.user
@@ -36,7 +40,8 @@ blogsRouter.post('/', async (request, response) => {
   user.blogs = user.blogs.concat(savedBlog._id)
   // Lưu user vô database
   await user.save()
-  // Trả về blog đã lưu
+  // Trả về blog đã lưu, nhớ populate thông tin user để frontend hiển thị đúng "added by..."
+  await savedBlog.populate('user', { username: 1, name: 1 })
   response.status(201).json(savedBlog)
 })
 
