@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { likeBlog, deleteBlog, commentBlog } from '../reducers/blogReducer'
 import { useState } from 'react'
+import { setNotification } from '../reducers/notificationReducer'
 
 const BlogDetails = () => {
   const [comment, setComment] = useState('')
@@ -23,11 +24,23 @@ const BlogDetails = () => {
     dispatch(likeBlog(blog))
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      dispatch(deleteBlog(blog.id))
-      // Xóa xong thì điều hướng về trang chủ
-      navigate('/')
+      try {
+        await dispatch(deleteBlog(blog.id))
+        dispatch(
+          setNotification(
+            `the blog ${blog.title} by ${blog.author} was successfully deleted`,
+            'success'
+          )
+        )
+        // Xóa xong thì điều hướng về trang chủ
+        navigate('/')
+      } catch (error) {
+        const errorMessage =
+          error.response?.data?.error || 'Failed to delete blog'
+        dispatch(setNotification(errorMessage, 'error'))
+      }
     }
   }
 
