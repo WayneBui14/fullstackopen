@@ -6,7 +6,7 @@ const User = require('../models/user') // User là model dùng để xử lý us
 blogsRouter.get('/', async (request, response) => {
   // Bay vô model Blog tìm tất cả các blog
   const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
-  response.json(blogs) // Trả về cho user data của Blog
+  response.status(200).json(blogs) // Trả về cho user data của Blog
 })
 
 blogsRouter.post('/', async (request, response) => {
